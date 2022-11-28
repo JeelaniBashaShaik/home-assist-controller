@@ -1,5 +1,9 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, onValue } from "firebase/database";
+
+var Gpio = require('onoff').Gpio; //include onoff to interact with the GPIO
+var LED = new Gpio(4, 'out'); //use GPIO pin 4, and specify that it is output
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -38,11 +42,16 @@ const starCountRef = ref(db, 'config');
 onValue(starCountRef, (snapshot) => {
   const data = snapshot.val();
   console.log('from read config', data);
+  if (data.point1 === true) {
+    LED.writeSync(1);
+  } else {
+    LED.writeSync(0);
+  }
 });
 
 
 const fcmTokensRef = ref(db, 'fcmTokens');
 onValue(fcmTokensRef, (snapshot) => {
   const data = snapshot.val();
-  console.log('from read config', data);
+  console.log('fcm tokens', data);
 });
