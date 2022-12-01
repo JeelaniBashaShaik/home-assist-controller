@@ -299,7 +299,12 @@ onValue(waterLevelSensorRef, (snapshot) => {
                 },
                 "to": fcmTokens[0]
             };
-            sendNotifications(requestBody);
+            if (waterLevelConfig.currentLevel <= waterLevelConfig.lowerThreshold) {
+                sendNotifications(requestBody);
+            } else if (waterLevelConfig.currentLevel === waterLevelConfig.higherThreshold) {
+                sendNotifications(requestBody);
+            }
+            
         }
     }
 });
