@@ -77,14 +77,14 @@ let mq6SensorConfig: any;
 let fcmTokens: any;
 console.log('started listening');
 
-/* waterTwentyFive.watch((err: any, value: any) => {
+waterTwentyFive.watch((err: any, value: any) => {
     if (err) {
         console.log(err, 'error from water 25 sensor input');
       throw err;
     }
-    console.log(value, 'water 25 output');
    waterLevel.twentyFive = value;
    calculateWaterPercentage();
+   delay(1000);
 });
 
 waterFifty.watch((err: any, value: any) => {
@@ -92,9 +92,9 @@ waterFifty.watch((err: any, value: any) => {
         console.log(err, 'error from water 50 sensor input');
       throw err;
     }
-    console.log(value, 'water 50 output');
    waterLevel.fifty = value;
    calculateWaterPercentage();
+   delay(1000);
 });
 
 waterSeventyFive.watch((err: any, value: any) => {
@@ -102,9 +102,9 @@ waterSeventyFive.watch((err: any, value: any) => {
         console.log(err, 'error from water 75 sensor input');
       throw err;
     }
-    console.log(value, 'water 75 output');
    waterLevel.seventyFive = value;
    calculateWaterPercentage();
+   delay(1000);
 });
 
 waterHundred.watch((err: any, value: any) => {
@@ -112,10 +112,10 @@ waterHundred.watch((err: any, value: any) => {
         console.log(err, 'error from water 100 sensor input');
       throw err;
     }
-    console.log(value, 'water 100 output');
    waterLevel.hundred = value;
    calculateWaterPercentage();
-}); */
+   delay(1000);
+});
 
 const fcmTokensRef = ref(database, 'fcmTokens');
 onValue(fcmTokensRef, (snapshot) => {
@@ -314,6 +314,7 @@ const calculateWaterPercentage = () => {
     } else if (waterLevel.twentyFive === 0 && waterLevel.fifty === 0 && waterLevel.seventyFive === 0 && waterLevel.hundred === 0) {
         waterLevel.result = 100;
     }
+    console.log(waterLevel.result, 'water level');
     set(ref(database, 'config/sensorsConfig/dark'), {
         ...waterLevelConfig,
         currentLevel: waterLevel.result
