@@ -181,14 +181,7 @@ onValue(waterLevelSensorRef, (snapshot) => {
 });
 
 
-ldrInput.watch((err, value) => {
-    if (err) {
-      throw err;
-    }
-    ldrOutput.writeSync(value);
-});
-
-fireInput.watch((err, value) => {
+fireInput.watch((err: any, value: any) => {
     if (err) {
       throw err;
     }
