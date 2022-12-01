@@ -126,10 +126,10 @@ fireInput.watch((err: any, value: any) => {
       throw err;
     }
     console.log(value, 'fire sensor output');
-   /* set(ref(database, 'config/sensorsConfig/fire'), {
+   set(ref(database, 'config/sensorsConfig/fire'), {
     ...fireSensorConfig,
-    isTriggered: value
-   }); */
+    isTriggered: value === 1 ? false : true
+   });
 });
 
 const motionSensorRef = ref(database, 'config/sensorsConfig/motion');
@@ -152,6 +152,18 @@ onValue(motionSensorRef, (snapshot) => {
     } else {
         motionSensorOutput.writeSync(1);
     }
+});
+
+motionSensorInput.watch((err: any, value: any) => {
+    if (err) {
+        console.log(err, 'error from motion sensor input');
+      throw err;
+    }
+    console.log(value, 'motion sensor output');
+   set(ref(database, 'config/sensorsConfig/motion'), {
+    ...fireSensorConfig,
+    isTriggered: value === 1 ? true : false
+   });
 });
 
 const smokeSensorRef = ref(database, 'config/sensorsConfig/smoke');
