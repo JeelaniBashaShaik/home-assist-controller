@@ -77,7 +77,7 @@ let mq6SensorConfig: any;
 let fcmTokens: any;
 console.log('started listening');
 
-waterTwentyFive.watch((err: any, value: any) => {
+/* waterTwentyFive.watch((err: any, value: any) => {
     if (err) {
         console.log(err, 'error from water 25 sensor input');
       throw err;
@@ -115,7 +115,7 @@ waterHundred.watch((err: any, value: any) => {
     console.log(value, 'water 100 output');
    waterLevel.hundred = value;
    calculateWaterPercentage();
-});
+}); */
 
 const fcmTokensRef = ref(database, 'fcmTokens');
 onValue(fcmTokensRef, (snapshot) => {
@@ -179,6 +179,7 @@ fireInput.watch((err: any, value: any) => {
     ...fireSensorConfig,
     isTriggered: value === 1 ? false : true
    });
+   delay(1000);
 });
 
 const motionSensorRef = ref(database, 'config/sensorsConfig/motion');
@@ -213,6 +214,7 @@ motionSensorInput.watch((err: any, value: any) => {
     ...motionSensorConfig,
     isTriggered: value === 1 ? true : false
    });
+   delay(1000);
 });
 
 
@@ -236,6 +238,7 @@ ldrInput.watch((err: any, value: any) => {
    set(ref(database, 'config/sensorsConfig/dark'), {
     isTriggered: value === 1 ? true : false
    });
+   delay(1000);
 });
 
 const smokeSensorRef = ref(database, 'config/sensorsConfig/smoke');
@@ -271,6 +274,7 @@ mq6Input.watch((err: any, value: any) => {
         ...mq6SensorConfig,
         isTriggered: value === 1 ? false : true
     });
+    delay(1000);
 });
 
 const waterLevelSensorRef = ref(database, 'config/sensorsConfig/waterLevel');
