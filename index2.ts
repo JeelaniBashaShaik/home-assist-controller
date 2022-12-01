@@ -215,9 +215,9 @@ motionSensorInput.watch((err: any, value: any) => {
     console.log(value, 'motion sensor output');
    set(ref(database, 'config/sensorsConfig/motion'), {
     ...motionSensorConfig,
-    isTriggered: value === 1 ? true : false
+    isTriggered: value === 0 ? true : false
    });
-   delay(3000);
+   delay(500);
 });
 
 

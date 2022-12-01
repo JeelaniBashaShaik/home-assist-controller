@@ -18,6 +18,49 @@ const database = getDatabase();
 
 const eveningProfile = [
     {
+        "isOn": false,
+        "pointId": "point1",
+        "pointName": "Hall Light"
+    },
+    {
+        "isOn": false,
+        "pointId": "point2",
+        "pointName": "Hall Fan 1"
+    },
+    {
+        "isOn": true,
+        "pointId": "point3",
+        "pointName": "Gate lights"
+    },
+    {
+        "isOn": true,
+        "pointId": "point4",
+        "pointName": "Balcony lights"
+    },
+    {
+        "isOn": false,
+        "pointId": "point5",
+        "pointName": "Bedroom light"
+    },
+    {
+        "isOn": false,
+        "pointId": "point6",
+        "pointName": "Bedroom fan"
+    },
+    {
+        "isOn": false,
+        "pointId": "point7",
+        "pointName": "Porch light"
+    },
+    {
+        "isOn": false,
+        "pointId": "point8",
+        "pointName": "Water pump"
+    }
+];
+
+const morningProfile = [
+    {
         "isOn": true,
         "pointId": "point1",
         "pointName": "Hall Light"
@@ -28,12 +71,12 @@ const eveningProfile = [
         "pointName": "Hall Fan 1"
     },
     {
-        "isOn": false,
+        "isOn": true,
         "pointId": "point3",
         "pointName": "Gate lights"
     },
     {
-        "isOn": false,
+        "isOn": true,
         "pointId": "point4",
         "pointName": "Balcony lights"
     },
