@@ -112,6 +112,7 @@ onValue(fireSensorRef, (snapshot) => {
 const motionSensorRef = ref(database, 'config/sensorsConfig/motion');
 onValue(motionSensorRef, (snapshot) => {
     const data = snapshot.val();
+    console.log(data, 'from motion sensor');
     const { isTriggered, shouldNotify, location } = data;
     if (isTriggered) {
         motionSensorOutput.writeSync(0);
@@ -125,8 +126,9 @@ onValue(motionSensorRef, (snapshot) => {
             };
             sendNotifications(requestBody);
         }
+    } else {
+        motionSensorOutput.writeSync(1);
     }
-    motionSensorOutput.writeSync(1);
 });
 
 const smokeSensorRef = ref(database, 'config/sensorsConfig/smoke');
@@ -145,8 +147,9 @@ onValue(smokeSensorRef, (snapshot) => {
             };
             sendNotifications(requestBody);
         }
+    } else {
+        mq6Output.writeSync(1);
     }
-    mq6Output.writeSync(1);
 });
 
 const waterLevelSensorRef = ref(database, 'config/sensorsConfig/waterLevel');
