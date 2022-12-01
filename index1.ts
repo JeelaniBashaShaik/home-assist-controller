@@ -67,6 +67,7 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase();
 
 let fireSensorConfig:any;
+let motionSensorConfig: any;
 
 let fcmTokens: any;
 
@@ -135,7 +136,7 @@ fireInput.watch((err: any, value: any) => {
 const motionSensorRef = ref(database, 'config/sensorsConfig/motion');
 onValue(motionSensorRef, (snapshot) => {
     const data = snapshot.val();
-   // console.log(data, 'from motion sensor');
+    motionSensorConfig = data;
     const { isTriggered, shouldNotify, location } = data;
     if (isTriggered) {
         motionSensorOutput.writeSync(0);
@@ -161,7 +162,7 @@ motionSensorInput.watch((err: any, value: any) => {
     }
     console.log(value, 'motion sensor output');
    set(ref(database, 'config/sensorsConfig/motion'), {
-    ...fireSensorConfig,
+    ...motionSensorConfig,
     isTriggered: value === 1 ? true : false
    });
 });
