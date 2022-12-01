@@ -68,6 +68,7 @@ const database = getDatabase();
 
 let fireSensorConfig:any;
 let motionSensorConfig: any;
+let darkSensorConfig: any;
 
 let fcmTokens: any;
 
@@ -163,6 +164,31 @@ motionSensorInput.watch((err: any, value: any) => {
     console.log(value, 'motion sensor output');
    set(ref(database, 'config/sensorsConfig/motion'), {
     ...motionSensorConfig,
+    isTriggered: value === 1 ? true : false
+   });
+});
+
+
+const ldrSensorRef = ref(database, 'config/sensorsConfig/dark');
+onValue(ldrSensorRef, (snapshot) => {
+    const data = snapshot.val();
+    darkSensorConfig = data;
+    const { isTriggered, shouldNotify, location } = data;
+    if (isTriggered) {
+        ldrOutput.writeSync(0);
+    } else {
+        ldrOutput.writeSync(1);
+    }
+});
+
+ldrInput.watch((err: any, value: any) => {
+    if (err) {
+        console.log(err, 'error from ldr sensor input');
+      throw err;
+    }
+    console.log(value, 'ldr sensor output');
+   set(ref(database, 'config/sensorsConfig/dark'), {
+    ...darkSensorConfig,
     isTriggered: value === 1 ? true : false
    });
 });
