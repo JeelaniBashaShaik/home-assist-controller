@@ -13,7 +13,7 @@ const waterLevel = {twentyFive: 1, fifty: 1, seventyFive: 1, hundred: 1, result:
 const ldrInput = new GPIO(14, 'in', 'both', {debounceTimeout: 5});
 const fireInput = new GPIO(15, 'in', 'both', {debounceTimeout: 5});
 const mq6Input = new GPIO(18, 'in', 'both', {debounceTimeout: 5});
-const motionSensorInput = new GPIO(23, 'in', 'both', {debounceTimeout: 5});
+const motionSensorInput = new GPIO(23, 'in', 'rising', {debounceTimeout: 5});
 
 const waterTwentyFive = new GPIO(1, 'in', 'both', {debounceTimeout: 5});
 const waterFifty = new GPIO(7, 'in', 'both', {debounceTimeout: 5});
@@ -215,7 +215,7 @@ motionSensorInput.watch((err: any, value: any) => {
     console.log(value, 'motion sensor output');
    set(ref(database, 'config/sensorsConfig/motion'), {
     ...motionSensorConfig,
-    isTriggered: value === 0 ? true : false
+    isTriggered: value === 1 ? true : false
    });
    delay(500);
 });
