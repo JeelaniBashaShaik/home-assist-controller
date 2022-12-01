@@ -36,6 +36,8 @@ const point7 = new GPIO(13, 'out');
 const buzzer = new GPIO(26, 'out');
 const waterPump = new GPIO(24, 'out');
 
+const outputPoints = [point1, point2, point3, point4, point5, point6, point7];
+
 
 ldrOutput.writeSync(1);
 fireOutput.writeSync(1);
@@ -130,12 +132,10 @@ onValue(fcmTokensRef, (snapshot) => {
 const pointsRef = ref(database, 'config/points');
 onValue(pointsRef, (snapshot) => {
     const points: Array<any> = snapshot.val();
-  //  console.log('points config', points);
-   /*  points.forEach(point => {
-        if (point.isOn) {
-            
-        }
-    }) */
+    console.log('points config', points);
+    points.forEach((point, index) => {
+        point.isOn ? outputPoints[index].writeSync(0) : outputPoints[index].writeSync(1);
+    })
 });
 
 const profilesRef = ref(database, 'config/profiles');
@@ -147,7 +147,6 @@ onValue(profilesRef, (snapshot) => {
 const fireSensorRef = ref(database, 'config/sensorsConfig/fire');
 onValue(fireSensorRef, (snapshot) => {
     const data = snapshot.val();
-    console.log('fire sensor config', data);
     fireSensorConfig = data;
     const { isTriggered, shouldNotify, location } = data;
     if (isTriggered) {
