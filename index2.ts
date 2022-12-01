@@ -10,15 +10,15 @@ const waterLevel = {twentyFive: 0, fifty: 0, seventyFive: 1, hundred: 1, result:
 
 
 // inputs to pi
-const ldrInput = new GPIO(14, 'in', 'both');
-const fireInput = new GPIO(15, 'in', 'both');
-const mq6Input = new GPIO(18, 'in', 'both');
-const motionSensorInput = new GPIO(23, 'in', 'both');
+const ldrInput = new GPIO(14, 'in', 'rising', {debounceTimeout: 500});
+const fireInput = new GPIO(15, 'in', 'rising', {debounceTimeout: 500});
+const mq6Input = new GPIO(18, 'in', 'rising', {debounceTimeout: 500});
+const motionSensorInput = new GPIO(23, 'in', 'rising', {debounceTimeout: 500});
 
-const waterTwentyFive = new GPIO(1, 'in', 'both');
-const waterFifty = new GPIO(7, 'in', 'both');
-const waterSeventyFive = new GPIO(8, 'in', 'both');
-const waterHundred = new GPIO(25, 'in', 'both');
+const waterTwentyFive = new GPIO(1, 'in', 'rising', {debounceTimeout: 500});
+const waterFifty = new GPIO(7, 'in', 'rising', {debounceTimeout: 500});
+const waterSeventyFive = new GPIO(8, 'in', 'rising', {debounceTimeout: 500});
+const waterHundred = new GPIO(25, 'in', 'rising', {debounceTimeout: 500});
 
 // outputs from pi
 const ldrOutput = new GPIO(4, 'out');
@@ -73,9 +73,21 @@ let fireSensorConfig:any;
 let motionSensorConfig: any;
 let darkSensorConfig: any;
 let waterLevelConfig: any;
+let mq6SensorConfig: any;
 
 let fcmTokens: any;
 
+mq6Input.watch((err: any, value: any) => {
+    if (err) {
+        console.log(err, 'error from mq6 sensor input');
+      throw err;
+    }
+    console.log(value, 'mq6 output');
+    set(ref(database, 'config/sensorsConfig/smoke'), {
+        ...mq6SensorConfig,
+        isTriggered: value === 1 ? false : true
+    });
+});
 
 waterTwentyFive.watch((err: any, value: any) => {
     if (err) {
