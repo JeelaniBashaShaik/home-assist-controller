@@ -83,7 +83,7 @@ onValue(fcmTokensRef, (snapshot) => {
 const pointsRef = ref(database, 'config/points');
 onValue(pointsRef, (snapshot) => {
     const points: Array<any> = snapshot.val();
-    console.log('points config', points);
+  //  console.log('points config', points);
    /*  points.forEach(point => {
         if (point.isOn) {
             
@@ -94,7 +94,7 @@ onValue(pointsRef, (snapshot) => {
 const profilesRef = ref(database, 'config/profiles');
 onValue(profilesRef, (snapshot) => {
     const data = snapshot.val();
-    console.log('profiles', data);
+  //  console.log('profiles', data);
 });
 
 const fireSensorRef = ref(database, 'config/sensorsConfig/fire');
@@ -120,10 +120,22 @@ onValue(fireSensorRef, (snapshot) => {
     }
 });
 
+fireInput.watch((err: any, value: any) => {
+    if (err) {
+        console.log(err, 'error from fire input');
+      throw err;
+    }
+    console.log(value, 'fire sensor output');
+   /* set(ref(database, 'config/sensorsConfig/fire'), {
+    ...fireSensorConfig,
+    isTriggered: value
+   }); */
+});
+
 const motionSensorRef = ref(database, 'config/sensorsConfig/motion');
 onValue(motionSensorRef, (snapshot) => {
     const data = snapshot.val();
-    console.log(data, 'from motion sensor');
+   // console.log(data, 'from motion sensor');
     const { isTriggered, shouldNotify, location } = data;
     if (isTriggered) {
         motionSensorOutput.writeSync(0);
@@ -180,17 +192,6 @@ onValue(waterLevelSensorRef, (snapshot) => {
     }
 });
 
-
-fireInput.watch((err: any, value: any) => {
-    if (err) {
-      throw err;
-    }
-   set(ref(database, 'config/sensorsConfig/fire'), {
-    ...fireSensorConfig,
-    isTriggered: value
-   });
-});
-
 const sendNotifications = async (requestBody: any) => {
     const { data } = await axios.post(fcmEndpoint, requestBody, { headers: {
         Authorization: fcmApiKey,
@@ -203,4 +204,4 @@ const delay = (time: any) => {
     return new Promise((resolve) => {
       setTimeout(resolve, time)
     })
-  }
+}
