@@ -1,8 +1,11 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, child, get,onValue } from "firebase/database";
 import axios from 'axios';
-
 const GPIO = require('onoff').Gpio;
+
+const SET_POINT = 0;
+const UNSET_POINT = 1;
+
 // inputs to pi
 const ldrInput = new GPIO(14, 'in');
 const fireInput = new GPIO(15, 'in');
@@ -63,6 +66,8 @@ const fcmEndpoint = 'https://fcm.googleapis.com/fcm/send';
 const app = initializeApp(firebaseConfig);
 const database = getDatabase();
 
+let fireSensorConfig:any;
+
 let fcmTokens: any;
 
 const fcmTokensRef = ref(database, 'fcmTokens');
@@ -77,8 +82,13 @@ onValue(fcmTokensRef, (snapshot) => {
 
 const pointsRef = ref(database, 'config/points');
 onValue(pointsRef, (snapshot) => {
-    const data = snapshot.val();
-    console.log('points config', data);
+    const points: Array<any> = snapshot.val();
+    console.log('points config', points);
+   /*  points.forEach(point => {
+        if (point.isOn) {
+            
+        }
+    }) */
 });
 
 const profilesRef = ref(database, 'config/profiles');
@@ -91,6 +101,7 @@ const fireSensorRef = ref(database, 'config/sensorsConfig/fire');
 onValue(fireSensorRef, (snapshot) => {
     const data = snapshot.val();
     console.log('fire sensor config', data);
+    fireSensorConfig = data;
     const { isTriggered, shouldNotify, location } = data;
     if (isTriggered) {
         fireOutput.writeSync(0);
@@ -167,6 +178,24 @@ onValue(waterLevelSensorRef, (snapshot) => {
             sendNotifications(requestBody);
         }
     }
+});
+
+
+ldrInput.watch((err, value) => {
+    if (err) {
+      throw err;
+    }
+    ldrOutput.writeSync(value);
+});
+
+fireInput.watch((err, value) => {
+    if (err) {
+      throw err;
+    }
+   set(ref(database, 'config/sensorsConfig/fire'), {
+    ...fireSensorConfig,
+    isTriggered: value
+   });
 });
 
 const sendNotifications = async (requestBody: any) => {
