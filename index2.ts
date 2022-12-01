@@ -6,16 +6,19 @@ const GPIO = require('onoff').Gpio;
 const SET_POINT = 0;
 const UNSET_POINT = 1;
 
-// inputs to pi
-const ldrInput = new GPIO(14, 'in');
-const fireInput = new GPIO(15, 'in');
-const mq6Input = new GPIO(18, 'in');
-const motionSensorInput = new GPIO(23, 'in');
+const waterLevel = {twentyFive: 0, fifty: 0, seventyFive: 1, hundred: 1, result: 50};
 
-const waterTwentyFive = new GPIO(1, 'in');
-const waterFifty = new GPIO(7, 'in');
-const waterSeventyFive = new GPIO(8, 'in');
-const waterHundred = new GPIO(25, 'in');
+
+// inputs to pi
+const ldrInput = new GPIO(14, 'in', 'both');
+const fireInput = new GPIO(15, 'in', 'both');
+const mq6Input = new GPIO(18, 'in', 'both');
+const motionSensorInput = new GPIO(23, 'in', 'both');
+
+const waterTwentyFive = new GPIO(1, 'in', 'both');
+const waterFifty = new GPIO(7, 'in', 'both');
+const waterSeventyFive = new GPIO(8, 'in', 'both');
+const waterHundred = new GPIO(25, 'in', 'both');
 
 // outputs from pi
 const ldrOutput = new GPIO(4, 'out');
@@ -69,8 +72,50 @@ const database = getDatabase();
 let fireSensorConfig:any;
 let motionSensorConfig: any;
 let darkSensorConfig: any;
+let waterLevelConfig: any;
 
 let fcmTokens: any;
+
+
+waterTwentyFive.watch((err: any, value: any) => {
+    if (err) {
+        console.log(err, 'error from water 25 sensor input');
+      throw err;
+    }
+    console.log(value, 'water 25 output');
+   waterLevel.twentyFive = value;
+   calculateWaterPercentage();
+});
+
+waterFifty.watch((err: any, value: any) => {
+    if (err) {
+        console.log(err, 'error from water 50 sensor input');
+      throw err;
+    }
+    console.log(value, 'water 50 output');
+   waterLevel.fifty = value;
+   calculateWaterPercentage();
+});
+
+waterSeventyFive.watch((err: any, value: any) => {
+    if (err) {
+        console.log(err, 'error from water 75 sensor input');
+      throw err;
+    }
+    console.log(value, 'water 75 output');
+   waterLevel.seventyFive = value;
+   calculateWaterPercentage();
+});
+
+waterHundred.watch((err: any, value: any) => {
+    if (err) {
+        console.log(err, 'error from water 100 sensor input');
+      throw err;
+    }
+    console.log(value, 'water 100 output');
+   waterLevel.hundred = value;
+   calculateWaterPercentage();
+});
 
 const fcmTokensRef = ref(database, 'fcmTokens');
 onValue(fcmTokensRef, (snapshot) => {
@@ -217,6 +262,7 @@ onValue(smokeSensorRef, (snapshot) => {
 const waterLevelSensorRef = ref(database, 'config/sensorsConfig/waterLevel');
 onValue(waterLevelSensorRef, (snapshot) => {
     const data = snapshot.val();
+    waterLevelConfig = data;
     if (!data.isAutomatic) {
         if (data.shouldNotify) {
             const requestBody = {
@@ -239,6 +285,22 @@ const sendNotifications = async (requestBody: any) => {
     console.log('notification sent for ', requestBody.notification.body);
 }
 
+
+const calculateWaterPercentage = () => {
+    if (waterLevel.twentyFive === 0 && waterLevel.fifty === 1 && waterLevel.seventyFive === 1 && waterLevel.hundred === 1) {
+        waterLevel.result = 25;
+    } else if (waterLevel.twentyFive === 0 && waterLevel.fifty === 0 && waterLevel.seventyFive === 1 && waterLevel.hundred === 1) {
+        waterLevel.result = 50;
+    } else if (waterLevel.twentyFive === 0 && waterLevel.fifty === 0 && waterLevel.seventyFive === 0 && waterLevel.hundred === 1) {
+        waterLevel.result = 75;
+    } else if (waterLevel.twentyFive === 0 && waterLevel.fifty === 0 && waterLevel.seventyFive === 0 && waterLevel.hundred === 0) {
+        waterLevel.result = 100;
+    }
+    set(ref(database, 'config/sensorsConfig/dark'), {
+        ...waterLevelConfig,
+        currentLevel: waterLevel.result
+    });
+}
 const delay = (time: any) => { 
     return new Promise((resolve) => {
       setTimeout(resolve, time)
