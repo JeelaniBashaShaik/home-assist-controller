@@ -285,9 +285,10 @@ onValue(waterLevelSensorRef, (snapshot) => {
     const data = snapshot.val();
     waterLevelConfig = data;
     if (waterLevelConfig.isAutomatic) {
-        if (waterLevel.result <= waterLevelConfig.lowerThreshold) {
+        console.log(waterLevelConfig.currentLevel);
+        if (waterLevelConfig.currentLevel <= waterLevelConfig.lowerThreshold) {
             waterPump.writeSync(0);
-        } else if (waterLevel.result === waterLevelConfig.higherThreshold) {
+        } else if (waterLevelConfig.currentLevel === waterLevelConfig.higherThreshold) {
             waterPump.writeSync(1);
         }
     } else {
