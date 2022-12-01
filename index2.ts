@@ -217,7 +217,7 @@ motionSensorInput.watch((err: any, value: any) => {
     ...motionSensorConfig,
     isTriggered: value === 1 ? true : false
    });
-   delay(1000);
+   delay(3000);
 });
 
 
@@ -285,7 +285,6 @@ onValue(waterLevelSensorRef, (snapshot) => {
     const data = snapshot.val();
     waterLevelConfig = data;
     if (waterLevelConfig.isAutomatic) {
-        console.log(waterLevelConfig.currentLevel);
         if (waterLevelConfig.currentLevel <= waterLevelConfig.lowerThreshold) {
             waterPump.writeSync(0);
         } else if (waterLevelConfig.currentLevel === waterLevelConfig.higherThreshold) {
