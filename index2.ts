@@ -6,7 +6,7 @@ const GPIO = require('onoff').Gpio;
 const SET_POINT = 0;
 const UNSET_POINT = 1;
 
-const waterLevel = {twentyFive: 0, fifty: 0, seventyFive: 1, hundred: 1, result: 50};
+const waterLevel = {twentyFive: 1, fifty: 1, seventyFive: 1, hundred: 1, result: 0};
 
 
 // inputs to pi
@@ -313,9 +313,11 @@ const calculateWaterPercentage = () => {
         waterLevel.result = 75;
     } else if (waterLevel.twentyFive === 0 && waterLevel.fifty === 0 && waterLevel.seventyFive === 0 && waterLevel.hundred === 0) {
         waterLevel.result = 100;
+    } else if (waterLevel.twentyFive === 1 && waterLevel.fifty === 1 && waterLevel.seventyFive === 1 && waterLevel.hundred === 1) {
+        waterLevel.result = 0;
     }
     console.log(waterLevel.result, 'water level');
-    set(ref(database, 'config/sensorsConfig/dark'), {
+    set(ref(database, 'config/sensorsConfig/waterLevel'), {
         ...waterLevelConfig,
         currentLevel: waterLevel.result
     });
