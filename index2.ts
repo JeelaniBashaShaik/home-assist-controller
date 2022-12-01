@@ -10,15 +10,15 @@ const waterLevel = {twentyFive: 0, fifty: 0, seventyFive: 1, hundred: 1, result:
 
 
 // inputs to pi
-const ldrInput = new GPIO(14, 'in', 'rising', {debounceTimeout: 10});
-const fireInput = new GPIO(15, 'in', 'rising', {debounceTimeout: 10});
-const mq6Input = new GPIO(18, 'in', 'rising', {debounceTimeout: 10});
-const motionSensorInput = new GPIO(23, 'in', 'rising', {debounceTimeout: 10});
+const ldrInput = new GPIO(14, 'in', 'both', {debounceTimeout: 10});
+const fireInput = new GPIO(15, 'in', 'both', {debounceTimeout: 10});
+const mq6Input = new GPIO(18, 'in', 'both', {debounceTimeout: 10});
+const motionSensorInput = new GPIO(23, 'in', 'both', {debounceTimeout: 10});
 
-const waterTwentyFive = new GPIO(1, 'in', 'rising', {debounceTimeout: 10});
-const waterFifty = new GPIO(7, 'in', 'rising', {debounceTimeout: 10});
-const waterSeventyFive = new GPIO(8, 'in', 'rising', {debounceTimeout: 10});
-const waterHundred = new GPIO(25, 'in', 'rising', {debounceTimeout: 10});
+const waterTwentyFive = new GPIO(1, 'in', 'both', {debounceTimeout: 10});
+const waterFifty = new GPIO(7, 'in', 'both', {debounceTimeout: 10});
+const waterSeventyFive = new GPIO(8, 'in', 'both', {debounceTimeout: 10});
+const waterHundred = new GPIO(25, 'in', 'both', {debounceTimeout: 10});
 
 // outputs from pi
 const ldrOutput = new GPIO(4, 'out');
