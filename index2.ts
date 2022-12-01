@@ -133,9 +133,16 @@ const pointsRef = ref(database, 'config/points');
 onValue(pointsRef, (snapshot) => {
     const points: Array<any> = snapshot.val();
     console.log('points config', points);
-    points.forEach((point, index) => {
+    /* points.forEach((point, index) => {
         point.isOn ? outputPoints[index].writeSync(0) : outputPoints[index].writeSync(1);
-    })
+    }) */
+    points[0].isOn ? point1.writeSync(0) : point1.writeSync(1);
+    points[1].isOn ? point2.writeSync(0) : point2.writeSync(1);
+    points[2].isOn ? point3.writeSync(0) : point3.writeSync(1);
+    points[3].isOn ? point4.writeSync(0) : point4.writeSync(1);
+    points[4].isOn ? point5.writeSync(0) : point5.writeSync(1);
+    points[5].isOn ? point6.writeSync(0) : point6.writeSync(1);
+    points[6].isOn ? point7.writeSync(0) : point7.writeSync(1);
 });
 
 const profilesRef = ref(database, 'config/profiles');
