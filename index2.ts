@@ -36,13 +36,11 @@ const point7 = new GPIO(13, 'out');
 const buzzer = new GPIO(26, 'out');
 const waterPump = new GPIO(24, 'out');
 
-const outputPoints = [point1, point2, point3, point4, point5, point6, point7];
-
-
 ldrOutput.writeSync(1);
 fireOutput.writeSync(1);
 mq6Output.writeSync(1);
 motionSensorOutput.writeSync(1);
+
 point1.writeSync(1);
 point2.writeSync(1);
 point3.writeSync(1);
@@ -52,7 +50,6 @@ point6.writeSync(1);
 point7.writeSync(1);
 buzzer.writeSync(0);
 waterPump.writeSync(1);
-
 
 const firebaseConfig = {
     apiKey: "AIzaSyBcropjkjiIWK_O7MB8d5O8V1chNqxfW9g",
@@ -287,7 +284,13 @@ const waterLevelSensorRef = ref(database, 'config/sensorsConfig/waterLevel');
 onValue(waterLevelSensorRef, (snapshot) => {
     const data = snapshot.val();
     waterLevelConfig = data;
-    if (!data.isAutomatic) {
+    if (waterLevelConfig.isAutomatic) {
+        if (waterLevel.result <= waterLevelConfig.lowerThreshold) {
+            waterPump.writeSync(0);
+        } else if (waterLevel.result === waterLevelConfig.higherThreshold) {
+            waterPump.writeSync(1);
+        }
+    } else {
         if (data.shouldNotify) {
             const requestBody = {
                 "notification": {
@@ -327,6 +330,7 @@ const calculateWaterPercentage = () => {
         ...waterLevelConfig,
         currentLevel: waterLevel.result
     });
+    
 }
 const delay = (time: any) => { 
     return new Promise((resolve) => {
