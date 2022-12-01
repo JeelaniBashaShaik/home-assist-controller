@@ -71,23 +71,11 @@ const database = getDatabase();
 
 let fireSensorConfig:any;
 let motionSensorConfig: any;
-let darkSensorConfig: any;
 let waterLevelConfig: any;
 let mq6SensorConfig: any;
 
 let fcmTokens: any;
-
-mq6Input.watch((err: any, value: any) => {
-    if (err) {
-        console.log(err, 'error from mq6 sensor input');
-      throw err;
-    }
-    console.log(value, 'mq6 output');
-    set(ref(database, 'config/sensorsConfig/smoke'), {
-        ...mq6SensorConfig,
-        isTriggered: value === 1 ? false : true
-    });
-});
+console.log('started listening');
 
 waterTwentyFive.watch((err: any, value: any) => {
     if (err) {
@@ -179,6 +167,8 @@ onValue(fireSensorRef, (snapshot) => {
     }
 });
 
+
+// listen to thermistor event
 fireInput.watch((err: any, value: any) => {
     if (err) {
         console.log(err, 'error from fire input');
@@ -229,8 +219,7 @@ motionSensorInput.watch((err: any, value: any) => {
 const ldrSensorRef = ref(database, 'config/sensorsConfig/dark');
 onValue(ldrSensorRef, (snapshot) => {
     const data = snapshot.val();
-    darkSensorConfig = data;
-    const { isTriggered, shouldNotify, location } = data;
+    const { isTriggered } = data;
     if (isTriggered) {
         ldrOutput.writeSync(0);
     } else {
@@ -245,7 +234,6 @@ ldrInput.watch((err: any, value: any) => {
     }
     console.log(value, 'ldr sensor output');
    set(ref(database, 'config/sensorsConfig/dark'), {
-    ...darkSensorConfig,
     isTriggered: value === 1 ? true : false
    });
 });
@@ -253,6 +241,7 @@ ldrInput.watch((err: any, value: any) => {
 const smokeSensorRef = ref(database, 'config/sensorsConfig/smoke');
 onValue(smokeSensorRef, (snapshot) => {
     const data = snapshot.val();
+    mq6SensorConfig = data;
     const { isTriggered, shouldNotify, location } = data;
     if (isTriggered) {
         mq6Output.writeSync(0);
@@ -269,6 +258,19 @@ onValue(smokeSensorRef, (snapshot) => {
     } else {
         mq6Output.writeSync(1);
     }
+});
+
+// smoke and gas sensor listening
+mq6Input.watch((err: any, value: any) => {
+    if (err) {
+        console.log(err, 'error from mq6 sensor input');
+      throw err;
+    }
+    console.log(value, 'mq6 output');
+    set(ref(database, 'config/sensorsConfig/smoke'), {
+        ...mq6SensorConfig,
+        isTriggered: value === 1 ? false : true
+    });
 });
 
 const waterLevelSensorRef = ref(database, 'config/sensorsConfig/waterLevel');
